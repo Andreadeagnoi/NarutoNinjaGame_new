@@ -1,16 +1,21 @@
 package adatimer.narutoninjagamenew;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -29,7 +34,7 @@ import java.util.ArrayList;
  *
  *  La main activity corrisponde al card database.
  */
-public class MainActivity extends ListActivity {
+public class MainActivity extends AppCompatActivity {
     static DBManager sDb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +51,26 @@ public class MainActivity extends ListActivity {
             characters = (ArrayList<Character>) sDb.getAllCharactersName();
         }
         CharacterArrayAdapter adapter = new CharacterArrayAdapter(this, characters);
-        setListAdapter(adapter);
+        GridView gridView = (GridView) findViewById(R.id.gridview);
+        gridView.setAdapter(adapter);
+        final Activity thisActivity = this;
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IntentIntegrator integrator = new IntentIntegrator(thisActivity);
+                integrator.initiateScan();
+            }
+        });
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            Toast.makeText(getApplicationContext(), scanResult.getContents(),
+                    Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
