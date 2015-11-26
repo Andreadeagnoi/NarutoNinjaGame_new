@@ -4,19 +4,19 @@ package adatimer.narutoninjagamenew;
  * Created by Andrea De Agnoi on 15/11/2015.
  */
 public class Category {
-    private String id;
+    private int id;
     private String description;
 
-    public Category(String id, String description) {
+    public Category(int id, String description) {
         this.id = id;
         this.description = description;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

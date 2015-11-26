@@ -107,6 +107,16 @@ public class Character {
     }
 
     // Temporary constructor for test purpose
+    public Character(String id, String name, String hp, String chakra, String baseAbility, Category category, Land land) {
+        this.id = id;
+        this.name = name;
+        this.hp = hp;
+        this.chakra = chakra;
+        this.baseAbility = baseAbility;
+        this.category = category;
+        this.land = land;
+    }
+
     public Character(String id, String name) {
         this.id = id;
         this.name = name;

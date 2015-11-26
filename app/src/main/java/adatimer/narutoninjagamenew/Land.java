@@ -7,9 +7,9 @@ public class Land {
     private int id;
     private String description;
 
-    public Land(String description, int id) {
-        this.description = description;
+    public Land(int id, String description) {
         this.id = id;
+        this.description = description;
     }
 
     public int getId() {

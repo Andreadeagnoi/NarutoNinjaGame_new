@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Scopo di questa app è di essere di supporto al gioco da tavolo Naruto Ninja Game new!
@@ -35,6 +37,8 @@ import java.util.ArrayList;
  *  La main activity corrisponde al card database.
  */
 public class MainActivity extends AppCompatActivity {
+    static  HashMap<Integer,Land> LANDS = new HashMap<>();
+    static  HashMap<Integer,Category> CATEGORIES = new HashMap<>();
     static DBManager sDb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +47,32 @@ public class MainActivity extends AppCompatActivity {
 
         sDb = new DBManager(getBaseContext());
         sDb.open();
+        initializeLandsCategories();
         ArrayList<Character> characters = (ArrayList<Character>) sDb.getAllCharactersName();
         if(characters.size() == 0){
-            sDb.insertCharacterTemp(new Character("PG-001", "NARUTO"));
-            sDb.insertCharacterTemp(new Character("PG-002","SASUKE"));
-            sDb.insertCharacterTemp(new Character("PG-003","SAKURA"));
+
+            sDb.insertCharacterTemp(new Character("PG-001", "NARUTO UZUMAKI","60","8","Ogni 3 turni recupera 2CHK anziché 1.",CATEGORIES.get(0),LANDS.get(0)));
+            //sDb.insertCharacterTemp(new Character("PG-002","SASUKE"));
+            //sDb.insertCharacterTemp(new Character("PG-003","SAKURA"));
             characters = (ArrayList<Character>) sDb.getAllCharactersName();
         }
-        CharacterArrayAdapter adapter = new CharacterArrayAdapter(this, characters);
+        final CharacterArrayAdapter adapter = new CharacterArrayAdapter(this, characters);
         GridView gridView = (GridView) findViewById(R.id.gridview);
         gridView.setAdapter(adapter);
         final Activity thisActivity = this;
+        // when a character is tapped, this activity invoke cardInfoActivity
+        gridView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent viewCharacterInfoIntent = new Intent(thisActivity, CardInfoActivity.class);
+                        viewCharacterInfoIntent.putExtra("CharacterId", adapter.getItem((int) id).getId());
+                        startActivity(viewCharacterInfoIntent);
+                    }
+                }
+        );
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 integrator.initiateScan();
             }
         });
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -86,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -95,12 +114,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     public static class CharacterArrayAdapter extends ArrayAdapter<Character> {
         private static Context sContext;
         private ArrayList<Character> mValues;
 
         public CharacterArrayAdapter(Context context, ArrayList<Character> values) {
-            super(context, R.layout.row_layout, values);
+            super(context, R.layout.row_layout_character, values);
             this.sContext = context;
             this.mValues = values;
         }
@@ -109,12 +130,26 @@ public class MainActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) sContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.row_layout, parent, false);
+            View rowView = inflater.inflate(R.layout.row_layout_character, parent, false);
             TextView textView = (TextView) rowView.findViewById(R.id.label);
             ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
             textView.setText(mValues.get(position).getName());
 
             return rowView;
         }
+    }
+
+    /**
+     * this method initialize the required map for the correct execution of the app.
+     * Specifically:
+     * - Categories
+     * - Lands
+     * These are loaded every time the app is launched because they occupy few kilobytes of RAM and
+     * the overhead to load 'em every time a character is queried would be excessive.
+     */
+    public void initializeLandsCategories(){
+
+        LANDS = sDb.getAllLands();
+        CATEGORIES = sDb.getAllCategories();
     }
 }

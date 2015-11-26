@@ -1,5 +1,6 @@
 package adatimer.narutoninjagamenew;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -127,6 +128,41 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         database.execSQL(DATABASE_CREATE_TECNICA);
         database.execSQL(DATABASE_CREATE_PERSONAGGIO_TECNICA);
         database.execSQL(DATABASE_CREATE_PARTY);
+        ContentValues lands = new ContentValues();
+        for (int i = 0; i < 6; i++){
+            lands.put(LAND_ID, i);
+            switch (i) {
+                case 0: lands.put(LAND_DESC, "PAESE DEL FUOCO");
+                    break;
+                case 1: lands.put(LAND_DESC, "PAESE DEL VENTO");
+                    break;
+                case 2: lands.put(LAND_DESC, "PAESE DELL\'ACQUA");
+                    break;
+                case 3: lands.put(LAND_DESC, "PAESE DEL FULMINE");
+                    break;
+                case 4: lands.put(LAND_DESC, "PAESE DELLA ROCCIA");
+                    break;
+                case 5: lands.put(LAND_DESC, "PAESE DEI FIUMI");
+                    break;
+            }
+            database.insert(TABLE_LAND,null,lands);
+            lands.clear();
+        }
+        ContentValues categories = new ContentValues();
+        for (int i = 0; i < 3; i++){
+            categories.put(CATEGORY_ID, i);
+            switch (i) {
+                case 0: categories.put(CATEGORY_DESC, "PERSONAGGIO PRINCIPALE");
+                    break;
+                case 1: categories.put(CATEGORY_DESC, "PERSONAGGIO DI SUPPORTO");
+                    break;
+                case 2: categories.put(CATEGORY_DESC, "NEMICO");
+                    break;
+            }
+            database.insert(TABLE_CATEGORY,null,categories);
+            categories.clear();
+        }
+
     }
 
     /**

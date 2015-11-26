@@ -13,14 +13,14 @@ public class Jutsu {
     private String attributes;
     private String name;
     private String requirements;
-    private String effects;
+    private String effect;
 
-    public Jutsu(int id, String attributes, String name, String requirements, String effects) {
+    public Jutsu(int id, String attributes, String name, String requirements, String effect) {
         this.id = id;
         this.attributes = attributes;
         this.name = name;
         this.requirements = requirements;
-        this.effects = effects;
+        this.effect = effect;
     }
 
     public int getId() {
@@ -55,11 +55,11 @@ public class Jutsu {
         this.requirements = requirements;
     }
 
-    public String getEffects() {
-        return effects;
+    public String getEffect() {
+        return effect;
     }
 
-    public void setEffects(String effects) {
-        this.effects = effects;
+    public void setEffect(String effect) {
+        this.effect = effect;
     }
 }
